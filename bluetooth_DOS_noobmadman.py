@@ -28,12 +28,12 @@ def print_device_info(devices):
         print("No devices found.")
 
 def main():
-   print("""    _   _  _ _____ ___   __  __   _   _  _ ___ _    ___ 
+    print("""    _   _  _ _____ ___   __  __   _   _  _ ___ _    ___ 
    /_\ | \| |_   _|_ _| |  \/  | /_\ | \| | __| |  | __|
   / _ \| .` | | |  | |  | |\/| |/ _ \| .` | _|| |__| _| 
  /_/ \_\_|\_| |_| |___|_|_|  |_/_/ \_\_|\_|___|____|___|
                      |___|""")
-   print("This is a simple Python script to scan for Bluetooth devices and ping them.")
+    print("This is a simple Python script to scan for Bluetooth devices and ping them.")
     print("Made by noobmadman")
     print("https://github.com/noobmadman")
     

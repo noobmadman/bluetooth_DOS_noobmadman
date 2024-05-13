@@ -1,52 +1,62 @@
 import os
 import subprocess
 
-print("This is a simple python code that runs for you hcitool and l2ping.")
-print("""    _   _  _ _____ ___   __  __   _   _  _ ___ _    ___ 
+def scan_devices():
+    try:
+        print("Scanning...")
+        output = subprocess.check_output("hcitool scan", shell=True, stderr=subprocess.STDOUT, text=True)
+        lines = output.splitlines()
+        devices = {}
+        for line in lines[1:]:  # Skip the header line
+            info = line.split()
+            mac = info[0]
+            device_name = ' '.join(info[2:])  # Join device name if it contains spaces
+            devices[mac] = device_name
+        return devices
+    except subprocess.CalledProcessError as e:
+        print("Error:", e.output)
+        return None
+
+def print_device_info(devices):
+    if devices:
+        print("| id |   MAC Address  |   Device Name   |")
+        print("---------------------------------------")
+        for idx, (mac, name) in enumerate(devices.items()):
+            print(f"| {idx}  |   {mac}  |   {name}")
+        print("---------------------------------------")
+    else:
+        print("No devices found.")
+
+def main():
+   print("""    _   _  _ _____ ___   __  __   _   _  _ ___ _    ___ 
    /_\ | \| |_   _|_ _| |  \/  | /_\ | \| | __| |  | __|
   / _ \| .` | | |  | |  | |\/| |/ _ \| .` | _|| |__| _| 
  /_/ \_\_|\_| |_| |___|_|_|  |_/_/ \_\_|\_|___|____|___|
                      |___|""")
-print("(no more romanian gipy songs on bluetooth speakers)JK")
-print("made by noobmadman")
-print("https://github.com/noobmadman")
-accept = input("Do you want to do this: y/n: ").lower()
-
-if accept == "y":
-    print("Scanning...")
-    output = subprocess.check_output("hcitool scan", shell=True, stderr=subprocess.STDOUT, text=True)
-    lines = output.splitlines()
-    id = 0
-    print("Scanned")
-elif accept == "n":
-    print("Ok man, see ya.")
-    exit(0)
-else:
-    print("You didn't say y or n (abort).")
-    exit(0)
-
-print("If you see nothing down here then no device was found.")
-
-id = 0
-del lines[0]
-array = []
-print("|id   |   mac_addres  |   device_name|")
-for line in lines:
-    info = line.split()
-    mac = info[0]
-    array.append(mac)
-    print(f"|{id}   |   {mac}  |   {''.join(info[1:])}|")
-    id = id + 1
-
-target_id = input('Target id or MAC address > ')
-
-if target_id.isdigit():
-    target_id = int(target_id)
-    if target_id < len(array):
-        target_id = array[target_id]
+   print("This is a simple Python script to scan for Bluetooth devices and ping them.")
+    print("Made by noobmadman")
+    print("https://github.com/noobmadman")
+    
+    accept = input("Do you want to proceed? (y/n): ").lower()
+    if accept != "y":
+        print("Exiting...")
+        return
+    
+    devices = scan_devices()
+    if devices:
+        print_device_info(devices)
+        target = input("Enter the ID or MAC address of the target device: ")
+        if target.isdigit() and int(target) < len(devices):
+            target_mac = list(devices.keys())[int(target)]
+            print(f"Pinging device with MAC address: {target_mac}")
+            os.system(f"l2ping -s 600 -f {target_mac}")
+        elif target in devices:
+            print(f"Pinging device with MAC address: {target}")
+            os.system(f"l2ping -s 600 -f {target}")
+        else:
+            print("Invalid ID or MAC address.")
     else:
-        print("Invalid ID.")
-        exit(0)
+        print("No devices found.")
 
-print("")
-os.system(f"l2ping -s 600 -f {target_id}")
+if __name__ == "__main__":
+    main()

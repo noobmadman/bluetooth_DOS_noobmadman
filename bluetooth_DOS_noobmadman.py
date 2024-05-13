@@ -56,7 +56,12 @@ def main():
         elif target in devices:
             perform_dos(target)
         else:
-            print("Invalid ID or MAC address.")
+            print("Device not found in the list.")
+            retry = input("Do you want to try again? (y/n): ").lower()
+            if retry == "y":
+                main()
+            else:
+                print("Exiting...")
     else:
         print("No devices found idk maybe try again.")
 
